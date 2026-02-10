@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 2rem;
+        }
+        pre { background: #161b22; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+        .success { color: #3fb950; }
+        .error { color: #f85149; }
+    </style>
+</head>
+<body>
+    <h1>🧪 WASM Module Test</h1>
+    <pre id="output"></pre>
+    
+    <script src="lib/agle_wasm.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(msg, isError = false) {
+            console.log(msg);
+            output.textContent += msg + '\n';
+        }
+        
+        (async () => {
+            try {
+                log('⏳ Initializing WASM...');
+                log(`🔍 window.AGLEWasm exists: ${typeof window.AGLEWasm}`);
+                
+                const adapter = await window.AGLEWasm.init();
+                log('<span class="success">✓ WASM initialized successfully</span>');
+                log(`  Adapter methods: ${Object.keys(adapter).join(', ')}`);
+                
+                // Test getBytes
+                if (adapter.getBytes) {
+                    const bytes = adapter.getBytes(8);
+                    const hexStr = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    log(`<span class="success">✓ agle_bytes(8) returns: ${hexStr}</span>`);
+                }
+                
+                // Test fpError
+                if (adapter.fpError || adapter.agle_fp_error_raw) {
+                    const fpErrorFunc = adapter.fpError || adapter.agle_fp_error_raw;
+                    const error1 = fpErrorFunc(0.5);
+                    const error2 = fpErrorFunc(0.123456);
+                    const error3 = fpErrorFunc(0.999999);
+                    log(`<span class="success">✓ agle_fp_error_raw works</span>`);
+                    log(`  fpError(0.5)      = ${error1}`);
+                    log(`  fpError(0.123456) = ${error2}`);
+                    log(`  fpError(0.999999) = ${error3}`);
+                }
+                
+            } catch (e) {
+                log(`<span class="error">✗ Error: ${e.message}</span>`, true);
+                log(e.stack, true);
+            }
+        })();
+    </script>
+</body>
+</html>
