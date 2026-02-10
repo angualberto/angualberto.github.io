@@ -5,15 +5,23 @@
  * This implementation captures hardware-induced irreversibility via:
  * 1. IEEE-754 rounding errors (volatile arithmetic)
  * 2. Chaotic map iteration (logistic map)
- * 3. Mixing with browser entropy (emscripten_get_random_bytes)
+ * 3. Mixing with browser entropy (crypto.getRandomValues via EM_JS)
  * 
  * Architecture: C (error generation) → WASM → JS (visualization)
  */
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <emscripten/emscripten.h>
+
+// JavaScript interface for browser crypto
+EM_JS(void, js_get_random_bytes, (uint8_t *buf, int len), {
+    const arr = new Uint8Array(len);
+    crypto.getRandomValues(arr);
+    HEAPU8.set(arr, buf);
+});
 
 #define AGLE_FP_ITERATIONS 16
 #define AGLE_LOGISTIC_R 3.9999
@@ -57,8 +65,8 @@ void agle_bytes(uint8_t *out, int len) {
         return;
     }
 
-    // Get browser entropy baseline
-    emscripten_get_random_bytes(out, (size_t)len);
+    // Get browser entropy baseline via crypto.getRandomValues
+    js_get_random_bytes(out, len);
 
     // Generate chaotic perturbation buffer
     for (int i = 0; i < len; i++) {
@@ -74,8 +82,10 @@ void agle_bytes(uint8_t *out, int len) {
         }
 
         // Mix: browser entropy XOR chaotic fingerprint
+        // Copy volatile double to uint64_t for bit manipulation
+        double state_snapshot = agle_state;
         uint64_t chaos_bits;
-        memcpy(&chaos_bits, &agle_state, sizeof(double));
+        memcpy(&chaos_bits, &state_snapshot, sizeof(double));
         out[i] ^= (uint8_t)(chaos_bits ^ (chaos_bits >> 8) ^ (chaos_bits >> 16));
     }
 
