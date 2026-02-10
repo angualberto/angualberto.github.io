@@ -141,15 +141,21 @@
             let fpErrorFunc = null;
             let wasmLoaded = false;
             try {
+                console.log('[Demo] Calling AGLEWasm.init()...');
                 const wasmAdapter = await window.AGLEWasm.init();
+                
                 if (wasmAdapter && wasmAdapter.agle_fp_error_raw) {
                     fpErrorFunc = wasmAdapter.agle_fp_error_raw;
                     wasmLoaded = true;
+                    console.log('[Demo] WASM loaded successfully');
                     resultsDiv.innerHTML += '<p class="success">✓ WASM carregado! Usando agle_fp_error_raw()</p>';
+                } else {
+                    console.warn('[Demo] Adapter returned but missing agle_fp_error_raw');
+                    resultsDiv.innerHTML += '<p>⚠️ WASM não expõe agle_fp_error_raw. Usando simulação sensível.</p>';
                 }
             } catch (e) {
-                console.warn('WASM load failed:', e);
-                resultsDiv.innerHTML += '<p>⚠️ WASM não disponível. Usando simulação sensível.</p>';
+                console.error('[Demo] WASM load failed:', e);
+                resultsDiv.innerHTML += `<p>⚠️ WASM não disponível (${e.message}). Usando simulação sensível.</p>`;
             }
             
             // Gerar erros

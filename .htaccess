@@ -1,0 +1,7 @@
+# WASM MIME type configuration for GitHub Pages
+# Add to .htaccess or configure web server
+
+<FilesMatch "\.wasm$">
+    Header set Content-Type "application/wasm"
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>

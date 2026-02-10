@@ -24,42 +24,87 @@
     <script>
         const output = document.getElementById('output');
         
-        function log(msg, isError = false) {
+        function log(msg) {
             console.log(msg);
-            output.textContent += msg + '\n';
+            const line = document.createElement('div');
+            if (msg.includes('✓')) {
+                line.innerHTML = msg.replace(/✓/g, '<span class="success">✓</span>');
+            } else if (msg.includes('✗')) {
+                line.innerHTML = msg.replace(/✗/g, '<span class="error">✗</span>');
+            } else {
+                line.textContent = msg;
+            }
+            output.appendChild(line);
         }
         
         (async () => {
             try {
-                log('⏳ Initializing WASM...');
-                log(`🔍 window.AGLEWasm exists: ${typeof window.AGLEWasm}`);
+                log('=== WASM Module Diagnostics ===');
+                log('');
                 
-                const adapter = await window.AGLEWasm.init();
-                log('<span class="success">✓ WASM initialized successfully</span>');
-                log(`  Adapter methods: ${Object.keys(adapter).join(', ')}`);
+                log('📋 Environment:');
+                log(`  window.location.href = ${window.location.href}`);
+                log(`  typeof WebAssembly = ${typeof WebAssembly}`);
+                log(`  typeof fetch = ${typeof fetch}`);
+                log('');
                 
-                // Test getBytes
-                if (adapter.getBytes) {
-                    const bytes = adapter.getBytes(8);
-                    const hexStr = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
-                    log(`<span class="success">✓ agle_bytes(8) returns: ${hexStr}</span>`);
-                }
+                log('🔍 Module Status:');
+                log(`  typeof window.AGLEWasm = ${typeof window.AGLEWasm}`);
                 
-                // Test fpError
-                if (adapter.fpError || adapter.agle_fp_error_raw) {
-                    const fpErrorFunc = adapter.fpError || adapter.agle_fp_error_raw;
-                    const error1 = fpErrorFunc(0.5);
-                    const error2 = fpErrorFunc(0.123456);
-                    const error3 = fpErrorFunc(0.999999);
-                    log(`<span class="success">✓ agle_fp_error_raw works</span>`);
-                    log(`  fpError(0.5)      = ${error1}`);
-                    log(`  fpError(0.123456) = ${error2}`);
-                    log(`  fpError(0.999999) = ${error3}`);
+                if (typeof window.AGLEWasm !== 'undefined') {
+                    log(`  typeof AGLEWasm.init = ${typeof window.AGLEWasm.init}`);
+                    
+                    log('');
+                    log('⏳ Initializing WASM...');
+                    const adapter = await window.AGLEWasm.init();
+                    
+                    if (!adapter) {
+                        log('✗ AGLEWasm.init() returned null/falsy');
+                        log('  This usually means fetch failed or WebAssembly.instantiate failed');
+                        return;
+                    }
+                    
+                    log('✓ AGLEWasm.init() succeeded');
+                    log(`  Adapter keys: ${Object.keys(adapter).sort().join(', ')}`);
+                    
+                    // Test getBytes
+                    if (adapter.getBytes) {
+                        try {
+                            const bytes = adapter.getBytes(8);
+                            const hexStr = Array.from(bytes)
+                                .map(b => b.toString(16).padStart(2, '0'))
+                                .join(' ');
+                            log(`✓ getBytes(8) = ${hexStr}`);
+                        } catch (e) {
+                            log(`✗ getBytes() failed: ${e.message}`);
+                        }
+                    }
+                    
+                    // Test fpError
+                    if (adapter.fpError || adapter.agle_fp_error_raw) {
+                        try {
+                            const fpFunc = adapter.fpError || adapter.agle_fp_error_raw;
+                            const errors = [];
+                            for (let i = 0; i < 5; i++) {
+                                errors.push(fpFunc(Math.random()));
+                            }
+                            log(`✓ agle_fp_error_raw() works`);
+                            log(`  Sample errors: ${errors.map(e => e.toExponential(2)).join(', ')}`);
+                        } catch (e) {
+                            log(`✗ fpError() failed: ${e.message}`);
+                        }
+                    } else {
+                        log('✗ fpError/agle_fp_error_raw not found in adapter');
+                    }
+                    
+                } else {
+                    log('✗ window.AGLEWasm is not defined');
+                    log('  Check that <script src="lib/agle_wasm.js"></script> is loaded');
                 }
                 
             } catch (e) {
-                log(`<span class="error">✗ Error: ${e.message}</span>`, true);
-                log(e.stack, true);
+                log(`✗ Fatal error: ${e.message}`);
+                log(e.stack);
             }
         })();
     </script>
