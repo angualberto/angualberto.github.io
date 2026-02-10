@@ -139,14 +139,17 @@
             
             // Carregar WASM (se disponível)
             let fpErrorFunc = null;
+            let wasmLoaded = false;
             try {
-                const wasmAdapter = await window.AGLE_WASM.init();
+                const wasmAdapter = await window.AGLEWasm.init();
                 if (wasmAdapter && wasmAdapter.agle_fp_error_raw) {
                     fpErrorFunc = wasmAdapter.agle_fp_error_raw;
+                    wasmLoaded = true;
                     resultsDiv.innerHTML += '<p class="success">✓ WASM carregado! Usando agle_fp_error_raw()</p>';
                 }
             } catch (e) {
-                resultsDiv.innerHTML += '<p>⚠️ WASM não disponível. Usando simulação JS.</p>';
+                console.warn('WASM load failed:', e);
+                resultsDiv.innerHTML += '<p>⚠️ WASM não disponível. Usando simulação sensível.</p>';
             }
             
             // Gerar erros
@@ -155,18 +158,21 @@
             const samples = 10000;
             
             for (let i = 0; i < samples; i++) {
-                const x = Math.random();
                 let error;
                 
                 if (fpErrorFunc) {
-                    // WASM: erro real IEEE-754
-                    error = fpErrorFunc(x);
+                    // WASM: erro real IEEE-754 via C volatile operations
+                    error = fpErrorFunc(Math.random());
                 } else {
-                    // Fallback: simular erro (volatile não funciona em JS)
-                    error = (x * 1.0000000000000001) - x;
+                    // Fallback: Simulação sensível de erro (não pode usar volatile em JS)
+                    // Usa operações que causam pequenas perturbações
+                    const x = Math.random();
+                    const y1 = x + 1e-16;
+                    const y2 = x * (1 + 1e-15);
+                    error = Math.abs((y1 - x) + (y2 - x)) / 2;
                 }
                 
-                errors.push(error);
+                if (error > 0) errors.push(error);
             }
             
             // Estatísticas
@@ -176,7 +182,8 @@
             
             resultsDiv.innerHTML += `
                 <h4>Resultados</h4>
-                <p><strong>Amostras:</strong> ${samples.toLocaleString()}</p>
+                <p><strong>Amostras coletadas:</strong> ${errors.length.toLocaleString()} / ${samples}</p>
+                <p><strong>Modo:</strong> ${wasmLoaded ? '🔧 WASM (IEEE-754 real)' : '📝 Simulação JS (aproximação)'}</p>
                 <p><strong>Média (μ):</strong> <span class="error-value">${mean.toExponential(6)}</span></p>
                 <p><strong>Desvio Padrão (σ):</strong> <span class="error-value">${stdDev.toExponential(6)}</span></p>
                 <p><strong>Primeiros 10 erros:</strong></p>
