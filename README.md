@@ -4,11 +4,13 @@ Teste visual de aleatoriedade usando HTML, CSS e JavaScript.
 
 ## Objetivo
 
-Validar visualmente a uniformidade e estabilidade de um gerador RNG:
+Validar visualmente a uniformidade e estabilidade de geradores RNG:
 
 - histograma por faixa
 - total de amostras
 - entropia de Shannon aproximada
+- teste chi-quadrado
+- exportacao CSV
 
 ## Estrutura
 
@@ -18,7 +20,11 @@ rng-visual-test/
 ├── style.css
 ├── app.js
 ├── lib/
+│   ├── agle_wasm.js
 │   └── my_rng.js
+├── wasm/
+│   ├── agle_wasm.c
+│   └── build_wasm.sh
 ├── README.md
 └── LICENSE
 ```
@@ -27,21 +33,31 @@ rng-visual-test/
 
 Abra o arquivo index.html no navegador.
 
-## Integracao com a biblioteca RNG real
+## Integracao com a biblioteca AGLE (WASM)
 
-Substitua o conteudo de lib/my_rng.js por:
+A integracao usa um modulo WASM com a funcao `agle_bytes`.
+O wrapper `lib/my_rng.js` carrega esse modulo e expande para:
 
-- um wrapper WASM que exponha nextInt(min, max) e nextFloat()
-- ou uma API JavaScript com o mesmo contrato
+- `nextInt(min, max)`
+- `nextFloat()`
 
-Exemplo de assinatura esperada:
+### Gerar o WASM
 
-```js
-const MyRNG = {
-  nextInt(min, max) { /* ... */ },
-  nextFloat() { /* ... */ }
-};
+Requer Emscripten (emcc):
+
+```bash
+./wasm/build_wasm.sh
 ```
+
+Isso gera `lib/agle_wasm.wasm`.
+
+### Contrato esperado
+
+```c
+void agle_bytes(uint8_t *out, int len);
+```
+
+Se o WASM nao estiver presente, o sistema usa WebCrypto como fallback.
 
 ## Publicar no GitHub Pages
 
@@ -61,11 +77,8 @@ Settings -> Pages -> Branch: main -> /root
 ## Proximos upgrades
 
 - Entropia de Shannon por janela
-- Teste qui-quadrado
-- Comparar dois RNGs lado a lado
-- Exportar estatisticas em CSV
 - Seed manual
-- Integracao WASM direta da biblioteca C
+- Integracao WASM direta da biblioteca C (com SHAKE256 completo)
 
 ## Licenca
 

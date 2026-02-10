@@ -37,38 +37,94 @@
         </div>
         <button id="roll" class="primary">Gerar</button>
         <button id="reset" class="ghost">Resetar</button>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <span class="label">Total</span>
-          <span class="value" id="total">0</span>
-        </div>
-        <div class="stat">
-          <span class="label">Ultimo valor</span>
-          <span class="value" id="last">-</span>
-        </div>
-        <div class="stat">
-          <span class="label">Entropia (Shannon)</span>
-          <span class="value" id="entropy">0.000</span>
-        </div>
-      </div>
-
-      <div class="histogram" aria-label="Histograma">
-        <div class="bar" data-i="0"><span>1</span></div>
-        <div class="bar" data-i="1"><span>2</span></div>
-        <div class="bar" data-i="2"><span>3</span></div>
-        <div class="bar" data-i="3"><span>4</span></div>
-        <div class="bar" data-i="4"><span>5</span></div>
-        <div class="bar" data-i="5"><span>6</span></div>
+        <button id="export" class="ghost">Exportar CSV</button>
       </div>
 
       <p class="hint">
         Dica: no modo 0-1, os valores sao binados em 6 faixas iguais.
       </p>
     </section>
+
+    <section class="grid-two">
+      <article class="panel" data-rng="a">
+        <div class="panel-header">
+          <div>
+            <h2>AGLE (WASM)</h2>
+            <p class="subtle">Biblioteca AGLE como fonte primaria.</p>
+          </div>
+          <span class="status" id="status-a">Carregando...</span>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="label">Total</span>
+            <span class="value" data-total>0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Ultimo valor</span>
+            <span class="value" data-last>-</span>
+          </div>
+          <div class="stat">
+            <span class="label">Entropia</span>
+            <span class="value" data-entropy>0.000</span>
+          </div>
+          <div class="stat">
+            <span class="label">Chi-quadrado</span>
+            <span class="value" data-chi>0.000</span>
+          </div>
+        </div>
+
+        <div class="histogram" aria-label="Histograma AGLE">
+          <div class="bar" data-i="0"><span>1</span></div>
+          <div class="bar" data-i="1"><span>2</span></div>
+          <div class="bar" data-i="2"><span>3</span></div>
+          <div class="bar" data-i="3"><span>4</span></div>
+          <div class="bar" data-i="4"><span>5</span></div>
+          <div class="bar" data-i="5"><span>6</span></div>
+        </div>
+      </article>
+
+      <article class="panel" data-rng="b">
+        <div class="panel-header">
+          <div>
+            <h2>Baseline (WebCrypto)</h2>
+            <p class="subtle">Comparacao com CSPRNG do navegador.</p>
+          </div>
+          <span class="status" id="status-b">Ativo</span>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="label">Total</span>
+            <span class="value" data-total>0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Ultimo valor</span>
+            <span class="value" data-last>-</span>
+          </div>
+          <div class="stat">
+            <span class="label">Entropia</span>
+            <span class="value" data-entropy>0.000</span>
+          </div>
+          <div class="stat">
+            <span class="label">Chi-quadrado</span>
+            <span class="value" data-chi>0.000</span>
+          </div>
+        </div>
+
+        <div class="histogram" aria-label="Histograma Baseline">
+          <div class="bar" data-i="0"><span>1</span></div>
+          <div class="bar" data-i="1"><span>2</span></div>
+          <div class="bar" data-i="2"><span>3</span></div>
+          <div class="bar" data-i="3"><span>4</span></div>
+          <div class="bar" data-i="4"><span>5</span></div>
+          <div class="bar" data-i="5"><span>6</span></div>
+        </div>
+      </article>
+    </section>
   </main>
 
+  <script src="lib/agle_wasm.js"></script>
   <script src="lib/my_rng.js"></script>
   <script src="app.js"></script>
 </body>
