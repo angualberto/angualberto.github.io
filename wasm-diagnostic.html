@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM Advanced Diagnostic</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+        
+        h1 { color: #58a6ff; margin-bottom: 1rem; }
+        h2 { color: #79c0ff; margin-top: 2rem; margin-bottom: 0.5rem; }
+        
+        .section { 
+            background: #161b22; 
+            border: 1px solid #30363d; 
+            border-radius: 4px; 
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        code {
+            background: #0d1117;
+            padding: 2px 4px;
+            border-radius: 2px;
+            color: #f85149;
+        }
+        
+        .success { color: #3fb950; font-weight: bold; }
+        .error { color: #f85149; font-weight: bold; }
+        .info { color: #58a6ff; }
+        
+        button {
+            background: linear-gradient(135deg, #1f6feb, #58a6ff);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            font-family: monospace;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.4);
+        }
+        
+        pre {
+            background: #0d1117;
+            padding: 1rem;
+            border-left: 3px solid #30363d;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        
+        .output {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 Advanced WASM Diagnostic Tool</h1>
+    
+    <div class="section">
+        <h2>1️⃣ Network Check</h2>
+        <button id="checkNetwork">Verificar WASM via Fetch</button>
+        <div id="networkOutput" class="output"></div>
+    </div>
+    
+    <div class="section">
+        <h2>2️⃣ WASM Instantiation</h2>
+        <button id="testInstant">Instanciar WASM</button>
+        <div id="instantOutput" class="output"></div>
+    </div>
+    
+    <div class="section">
+        <h2>3️⃣ Module Functions Test</h2>
+        <button id="testFunctions">Testar Funções Exportadas</button>
+        <div id="funcOutput" class="output"></div>
+    </div>
+    
+    <div class="section">
+        <h2>📊 Live Testing (Console)</h2>
+        <p>Abra DevTools (F12) → Console para ver logs detalhados</p>
+        <button id="loadWasm">Carregar WASM Agora</button>
+        <div id="liveOutput" class="output"></div>
+    </div>
+    
+    <script>
+        // Utility functions
+        function log(element, msg, className = '') {
+            const line = document.createElement('div');
+            if (className) line.className = className;
+            line.textContent = msg;
+            element.appendChild(line);
+            console.log(msg);
+        }
+        
+        function clearOutput(element) {
+            element.innerHTML = '';
+        }
+        
+        // Test 1: Network Check
+        document.getElementById('checkNetwork').addEventListener('click', async () => {
+            const output = document.getElementById('networkOutput');
+            clearOutput(output);
+            
+            try {
+                log(output, '📡 Fetching lib/agle_wasm.wasm...', 'info');
+                const start = performance.now();
+                const response = await fetch('lib/agle_wasm.wasm');
+                const elapsed = (performance.now() - start).toFixed(2);
+                
+                log(output, `✓ Fetch completed in ${elapsed}ms`, 'success');
+                log(output, `  Status: ${response.status} ${response.statusText}`);
+                log(output, `  Content-Type: ${response.headers.get('content-type')}`);
+                log(output, `  Content-Length: ${response.headers.get('content-length')} bytes`);
+                
+                const buffer = await response.arrayBuffer();
+                log(output, `  Downloaded: ${(buffer.byteLength / 1024).toFixed(2)} KB`, 'success');
+                
+                // Check magic number
+                const view = new Uint8Array(buffer, 0, 8);
+                const magic = Array.from(view).map(b => '0x' + b.toString(16).padStart(2, '0')).join(' ');
+                log(output, `  Magic: ${magic}`, 'info');
+                
+                if (view[0] === 0 && view[1] === 0x61 && view[2] === 0x73 && view[3] === 0x6d) {
+                    log(output, '✓ Valid WebAssembly binary', 'success');
+                } else {
+                    log(output, '✗ Invalid magic number', 'error');
+                }
+                
+            } catch (e) {
+                log(output, `✗ Error: ${e.message}`, 'error');
+            }
+        });
+        
+        // Test 2: WASM Instantiation
+        document.getElementById('testInstant').addEventListener('click', async () => {
+            const output = document.getElementById('instantOutput');
+            clearOutput(output);
+            
+            try {
+                log(output, '📦 Fetching WASM...', 'info');
+                const response = await fetch('lib/agle_wasm.wasm');
+                const buffer = await response.arrayBuffer();
+                
+                log(output, '⚙️ Instantiating WebAssembly module...', 'info');
+                const module = await WebAssembly.instantiate(buffer, {
+                    env: {},
+                    js: { mem: new WebAssembly.Memory({ initial: 256 }) }
+                });
+                
+                log(output, '✓ WebAssembly instantiation successful', 'success');
+                
+                const instance = module.instance;
+                const exports = instance.exports || instance;
+                
+                log(output, '', 'info');
+                log(output, 'Available exports:', 'info');
+                for (const name of Object.keys(exports).sort()) {
+                    const exp = exports[name];
+                    const type = typeof exp;
+                    log(output, `  ${name.padEnd(25)} <${type}>`, 'info');
+                }
+                
+                // Store in global for Test 3
+                window.__wasmInstance = instance;
+                
+            } catch (e) {
+                log(output, `✗ Error: ${e.message}`, 'error');
+                if (e.stack) log(output, e.stack, 'error');
+            }
+        });
+        
+        // Test 3: Function Testing
+        document.getElementById('testFunctions').addEventListener('click', async () => {
+            const output = document.getElementById('funcOutput');
+            clearOutput(output);
+            
+            if (!window.__wasmInstance) {
+                log(output, '✗ No WASM instance loaded. Run Test 2 first.', 'error');
+                return;
+            }
+            
+            try {
+                const exports = window.__wasmInstance.exports || window.__wasmInstance;
+                const memory = exports.memory;
+                
+                // Test agle_bytes
+                if (exports.agle_bytes || exports._agle_bytes) {
+                    const agleBytes = exports.agle_bytes || exports._agle_bytes;
+                    const malloc = exports._malloc;
+                    const free = exports._free;
+                    
+                    if (malloc && free) {
+                        const ptr = malloc(16);
+                        agleBytes(ptr, 16);
+                        const bytes16 = new Uint8Array(memory.buffer, ptr, 16);
+                        const hex = Array.from(bytes16).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                        log(output, `✓ agle_bytes(16) = ${hex}`, 'success');
+                        free(ptr);
+                    } else {
+                        log(output, '⚠️ malloc/free not available', 'info');
+                    }
+                } else {
+                    log(output, '✗ agle_bytes not found in exports', 'error');
+                }
+                
+                log(output, '', 'info');
+                
+                // Test agle_fp_error_raw
+                if (exports.agle_fp_error_raw || exports._agle_fp_error_raw) {
+                    const fpError = exports.agle_fp_error_raw || exports._agle_fp_error_raw;
+                    log(output, '✓ agle_fp_error_raw found', 'success');
+                    
+                    const samples = [];
+                    for (let i = 0; i < 5; i++) {
+                        const x = Math.random();
+                        const err = fpError(x);
+                        samples.push(`fpError(${x.toFixed(4)}) = ${err.toExponential(3)}`);
+                    }
+                    samples.forEach(s => log(output, `  ${s}`, 'info'));
+                } else {
+                    log(output, '✗ agle_fp_error_raw not found in exports', 'error');
+                }
+                
+            } catch (e) {
+                log(output, `✗ Error: ${e.message}`, 'error');
+            }
+        });
+        
+        // Live test with lib/agle_wasm.js
+        document.getElementById('loadWasm').addEventListener('click', async () => {
+            const output = document.getElementById('liveOutput');
+            clearOutput(output);
+            
+            try {
+                log(output, '⏳ Calling window.AGLEWasm.init()...', 'info');
+                const adapter = await window.AGLEWasm.init();
+                
+                if (!adapter) {
+                    log(output, '✗ AGLEWasm.init() returned null', 'error');
+                    return;
+                }
+                
+                log(output, '✓ Adapter loaded successfully ', 'success');
+                log(output, `  Available methods: ${Object.keys(adapter).join(', ')}`, 'info');
+                
+                if (adapter.getBytes) {
+                    const bytes = adapter.getBytes(8);
+                    const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    log(output, `✓ getBytes(8) = ${hex}`, 'success');
+                }
+                
+                if (adapter.fpError) {
+                    const err = adapter.fpError(0.5);
+                    log(output, `✓ fpError(0.5) = ${err.toExponential(3)}`, 'success');
+                }
+                
+            } catch (e) {
+                log(output, `✗ Error: ${e.message}`, 'error');
+                console.error(e);
+            }
+        });
+        
+        // Auto-run on load for convenience
+        console.log('%c🧪 WASM Diagnostic Tool Loaded', 'font-size: 16px; font-weight: bold; color: #00ff00;');
+        console.log('Click buttons above to run tests, check console for detailed logs');
+    </script>
+</body>
+</html>
