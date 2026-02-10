@@ -1,0 +1,227 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;600&display=swap");
+
+:root {
+  --bg: #0d1117;
+  --bg-2: #131b25;
+  --card: #151c27;
+  --accent: #3fd7b8;
+  --accent-2: #f7b267;
+  --text: #e6edf3;
+  --muted: #9fb0c3;
+  --stroke: #263247;
+  --shadow: rgba(4, 12, 24, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at 20% 10%, #1b2b3d, var(--bg)),
+    radial-gradient(circle at 80% 30%, #1d2632, var(--bg-2));
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.container {
+  width: min(920px, 100%);
+  display: grid;
+  gap: 24px;
+}
+
+.hero {
+  background: linear-gradient(135deg, rgba(63, 215, 184, 0.12), rgba(247, 178, 103, 0.08));
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  padding: 28px 32px;
+  box-shadow: 0 20px 60px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: -40% 60% auto auto;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(63, 215, 184, 0.3), transparent 70%);
+  filter: blur(0px);
+  animation: float 6s ease-in-out infinite;
+}
+
+.eyebrow {
+  font-family: "Spline Sans Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+
+.hero h1 {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 4vw, 44px);
+}
+
+.lead {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  padding: 28px 32px;
+  box-shadow: 0 20px 60px var(--shadow);
+  display: grid;
+  gap: 22px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+}
+
+label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+select,
+button {
+  font-family: inherit;
+  background: #0f1622;
+  color: var(--text);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+button {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.primary {
+  background: linear-gradient(135deg, var(--accent), #2bb1ff);
+  color: #0b111a;
+  font-weight: 700;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  background: #0f1622;
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.stat .label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.stat .value {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.histogram {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  align-items: end;
+  height: 220px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px dashed var(--stroke);
+  background: #0e1520;
+}
+
+.bar {
+  background: linear-gradient(180deg, var(--accent), #175c54);
+  height: 2px;
+  border-radius: 10px;
+  position: relative;
+  transition: height 0.25s ease;
+}
+
+.bar span {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(12px);
+  }
+}
+
+@media (max-width: 720px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .panel,
+  .hero {
+    padding: 22px;
+  }
+
+  .histogram {
+    height: 180px;
+  }
+}
