@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEEE-754 Error Visualization | AGLE</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #c9d1d9;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #58a6ff, #79c0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .theory {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .formula {
+            font-family: 'Georgia', serif;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: #79c0ff;
+        }
+        
+        .demo {
+            background: #0d1117;
+            border: 2px solid #30363d;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1f6feb, #58a6ff);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.4);
+        }
+        
+        #results {
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .error-value {
+            color: #f85149;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #3fb950;
+        }
+        
+        .histogram {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 4px;
+            margin-top: 1rem;
+        }
+        
+        .bar {
+            background: linear-gradient(180deg, #58a6ff, #1f6feb);
+            border-radius: 4px;
+            transition: height 0.3s;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Voltar ao RNG</a>
+        
+        <h1>🔬 Demonstração: Erro de Ponto Flutuante IEEE-754</h1>
+        
+        <div class="theory">
+            <h2>Teoria</h2>
+            <p>O erro de ponto flutuante é a diferença entre um valor ideal (precisão infinita) e sua representação real em IEEE-754:</p>
+            <div class="formula">ε = x<sub>real</sub> - round<sub>IEEE</sub>(x)</div>
+            <p>Este erro é <strong>pequeno, mas real</strong> e <strong>não-determinístico</strong> no hardware. A AGLE amplifica esses erros via mapas caóticos para extrair entropia.</p>
+        </div>
+        
+        <div class="demo">
+            <h3>Experimento Interativo</h3>
+            <p>Clique para gerar 10.000 erros de ponto flutuante e visualizar a distribuição:</p>
+            <button id="runDemo">▶ Executar Demonstração</button>
+            
+            <div id="results"></div>
+        </div>
+    </div>
+    
+    <script src="lib/agle_wasm.js"></script>
+    <script>
+        const runBtn = document.getElementById('runDemo');
+        const resultsDiv = document.getElementById('results');
+        
+        runBtn.addEventListener('click', async () => {
+            resultsDiv.innerHTML = '<p class="success">⚙️ Inicializando WASM...</p>';
+            
+            // Carregar WASM (se disponível)
+            let fpErrorFunc = null;
+            try {
+                const wasmAdapter = await window.AGLE_WASM.init();
+                if (wasmAdapter && wasmAdapter.agle_fp_error_raw) {
+                    fpErrorFunc = wasmAdapter.agle_fp_error_raw;
+                    resultsDiv.innerHTML += '<p class="success">✓ WASM carregado! Usando agle_fp_error_raw()</p>';
+                }
+            } catch (e) {
+                resultsDiv.innerHTML += '<p>⚠️ WASM não disponível. Usando simulação JS.</p>';
+            }
+            
+            // Gerar erros
+            resultsDiv.innerHTML += '<p>📊 Gerando 10.000 erros...</p>';
+            const errors = [];
+            const samples = 10000;
+            
+            for (let i = 0; i < samples; i++) {
+                const x = Math.random();
+                let error;
+                
+                if (fpErrorFunc) {
+                    // WASM: erro real IEEE-754
+                    error = fpErrorFunc(x);
+                } else {
+                    // Fallback: simular erro (volatile não funciona em JS)
+                    error = (x * 1.0000000000000001) - x;
+                }
+                
+                errors.push(error);
+            }
+            
+            // Estatísticas
+            const mean = errors.reduce((a, b) => a + b, 0) / samples;
+            const variance = errors.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / samples;
+            const stdDev = Math.sqrt(variance);
+            
+            resultsDiv.innerHTML += `
+                <h4>Resultados</h4>
+                <p><strong>Amostras:</strong> ${samples.toLocaleString()}</p>
+                <p><strong>Média (μ):</strong> <span class="error-value">${mean.toExponential(6)}</span></p>
+                <p><strong>Desvio Padrão (σ):</strong> <span class="error-value">${stdDev.toExponential(6)}</span></p>
+                <p><strong>Primeiros 10 erros:</strong></p>
+                <pre>${errors.slice(0, 10).map(e => e.toExponential(6)).join('\n')}</pre>
+            `;
+            
+            // Histograma simplificado
+            const bins = 20;
+            const binCounts = new Array(bins).fill(0);
+            const min = Math.min(...errors);
+            const max = Math.max(...errors);
+            const range = max - min;
+            
+            errors.forEach(e => {
+                const binIndex = Math.min(bins - 1, Math.floor(((e - min) / range) * bins));
+                binCounts[binIndex]++;
+            });
+            
+            const maxCount = Math.max(...binCounts);
+            const histogramHTML = binCounts.map(count => {
+                const height = (count / maxCount) * 100;
+                return `<div class="bar" style="height: ${height}px" title="${count} amostras"></div>`;
+            }).join('');
+            
+            resultsDiv.innerHTML += `
+                <h4>Distribuição</h4>
+                <div class="histogram">${histogramHTML}</div>
+            `;
+        });
+    </script>
+</body>
+</html>
