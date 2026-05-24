@@ -7,6 +7,7 @@ Portfolio pessoal publicado no GitHub Pages, desenvolvido com HTML, CSS e JavaSc
 - Apresentacao profissional de Andre Gualberto.
 - Areas de atuacao em inteligencia artificial, visao computacional, APIs e pesquisa aplicada.
 - Projetos em RoboCup, RAG local, imagens medicas, simulacao genetica e entropia embarcada.
+- Painel experimental de processamento de mamografias com pseudocor e gradiente.
 - Habilidades tecnicas e linhas de pesquisa.
 - Contato profissional por e-mail, WhatsApp, LinkedIn e GitHub.
 
@@ -19,7 +20,8 @@ Portfolio pessoal publicado no GitHub Pages, desenvolvido com HTML, CSS e JavaSc
 |-- script.js
 |-- assets/
 |   |-- andre-gualberto.jpg
-|   `-- favicon.svg
+|   |-- favicon.svg
+|   `-- pesquisa-mamografia-rainbowb.png
 `-- README.md
 ```
 

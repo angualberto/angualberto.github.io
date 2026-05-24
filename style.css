@@ -103,6 +103,14 @@ button { font: inherit; color: inherit; }
 .project-card p { color: var(--muted); font-size: 14px; margin-bottom: 25px; }
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
 .tags span { display: inline-flex; min-height: 27px; align-items: center; padding: 0 10px; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 11px; }
+.research-feature { padding-top: 30px; }
+.research-feature-head { display: grid; grid-template-columns: .85fr 1.15fr; align-items: end; gap: 58px; margin-bottom: 38px; }
+.research-feature-head .section-heading { margin: 0; }
+.research-feature-copy { max-width: 560px; color: var(--muted); font-size: 16px; }
+.research-figure { margin: 0; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.research-image-link { display: block; }
+.research-figure img { display: block; width: 100%; max-height: 1050px; object-fit: contain; object-position: top center; border-radius: 5px; background: #ffffff; }
+.research-figure figcaption { padding: 16px 4px 2px; color: var(--muted); font-size: 13px; }
 .skills-layout { display: grid; grid-template-columns: .75fr 1.25fr; gap: 65px; }
 .skills-layout .section-heading { margin: 0; }
 .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
@@ -141,7 +149,7 @@ button { font: inherit; color: inherit; }
   .site-nav.open { display: flex; }
   .site-nav a { padding: 13px 10px; }
   .hero-background { background-position: center, center, 82% 22%; background-size: cover, cover, auto 108%; }
-  .about-grid, .skills-layout, .research-layout { grid-template-columns: 1fr; gap: 42px; }
+  .about-grid, .research-feature-head, .skills-layout, .research-layout { grid-template-columns: 1fr; gap: 42px; }
   .expertise-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 680px) {
