@@ -8,7 +8,7 @@ Portfolio pessoal publicado no GitHub Pages, desenvolvido com HTML, CSS e JavaSc
 - Areas de atuacao em inteligencia artificial, visao computacional, APIs e pesquisa aplicada.
 - Projetos em RoboCup, RAG local, imagens medicas, simulacao genetica e entropia embarcada.
 - Habilidades tecnicas e linhas de pesquisa.
-- Contato profissional por e-mail, telefone, LinkedIn e GitHub.
+- Contato profissional por e-mail, WhatsApp, LinkedIn e GitHub.
 
 ## Estrutura
 
