@@ -1,136 +1,198 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RNG Visual Test</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d12">
+  <meta name="color-scheme" content="dark">
+  <title>Andre Gualberto | Inteligencia Artificial e Software</title>
+  <meta name="description" content="Portfolio de Andre Gualberto, desenvolvedor e pesquisador independente em inteligencia artificial, visao computacional, sistemas multiagentes, APIs e software aplicado.">
+  <meta name="author" content="Andre Gualberto">
+  <meta name="keywords" content="Andre Gualberto, inteligencia artificial, visao computacional, machine learning, Python, FastAPI, RoboCup, RAG">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Andre Gualberto | Inteligencia Artificial e Software">
+  <meta property="og:description" content="Projetos em IA, visao computacional, sistemas inteligentes e pesquisa aplicada.">
+  <meta property="og:url" content="https://angualberto.github.io/">
+  <meta property="og:image" content="https://angualberto.github.io/assets/andre-gualberto.jpg">
+  <meta property="og:locale" content="pt_BR">
+  <link rel="canonical" href="https://angualberto.github.io/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <main class="container">
-    <header class="hero">
-      <p class="eyebrow">Core Library for Entropy Generation and Secure Randomness</p>
-      <h1>RNG Visual Test</h1>
-      <p class="lead">
-        Visualizador interativo de aleatoriedade para observar distribuicao,
-        entropia aproximada e estabilidade de um gerador RNG.
-      </p>
-      <p class="lead" style="margin-top: 0.5rem; font-size: 0.9rem;">
-        <a href="fp-error-demo.html" style="color: #58a6ff; text-decoration: none;">
-          🔬 Ver demonstração: Erro de Ponto Flutuante IEEE-754 →
-        </a>
-      </p>
-    </header>
+  <header class="site-header" id="inicio">
+    <div class="header-inner container">
+      <a class="brand" href="#inicio" aria-label="Andre Gualberto, inicio">
+        <span class="brand-mark">AG</span>
+        <span class="brand-name">Andre Gualberto</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">Abrir menu</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Navegacao principal">
+        <a href="#sobre">Sobre</a>
+        <a href="#atuacao">Atuacao</a>
+        <a href="#projetos">Projetos</a>
+        <a href="#habilidades">Habilidades</a>
+        <a href="#pesquisa">Pesquisa</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="panel">
-      <div class="controls">
-        <div class="control">
-          <label for="mode">Modo</label>
-          <select id="mode">
-            <option value="dice">Inteiro (1-6)</option>
-            <option value="unit">Real (0-1)</option>
-          </select>
+  <main>
+    <section class="hero" aria-label="Apresentacao">
+      <div class="hero-background" aria-hidden="true"></div>
+      <div class="hero-inner container">
+        <p class="eyebrow reveal">Desenvolvedor e pesquisador independente</p>
+        <h1 class="reveal">Andre<br>Gualberto</h1>
+        <p class="hero-role reveal">Inteligencia Artificial, Visao Computacional e Software Aplicado</p>
+        <p class="hero-copy reveal">Desenvolvo sistemas que transformam dados, imagens e conhecimento tecnico em solucoes executaveis: modelos locais, APIs, automacao e pesquisa computacional.</p>
+        <div class="hero-actions reveal">
+          <a class="button button-primary" href="#projetos">Ver projetos</a>
+          <a class="button button-secondary" href="https://github.com/angualberto" target="_blank" rel="noreferrer">GitHub</a>
         </div>
-        <div class="control">
-          <label for="batch">Amostras por lote</label>
-          <select id="batch">
-            <option value="1">1</option>
-            <option value="10">10</option>
-            <option value="100">100</option>
-            <option value="1000">1000</option>
-          </select>
-        </div>
-        <button id="roll" class="primary">Gerar</button>
-        <button id="reset" class="ghost">Resetar</button>
-        <button id="export" class="ghost">Exportar CSV</button>
       </div>
-
-      <p class="hint">
-        Dica: no modo 0-1, os valores sao binados em 6 faixas iguais.
-      </p>
+      <div class="hero-focus" aria-label="Focos de trabalho">
+        <div class="container focus-grid">
+          <span>IA aplicada</span>
+          <span>Visao computacional</span>
+          <span>Sistemas inteligentes</span>
+        </div>
+      </div>
     </section>
 
-    <section class="grid-two">
-      <article class="panel" data-rng="a">
-        <div class="panel-header">
-          <div>
-            <h2>AGLE (WASM)</h2>
-            <p class="subtle">Biblioteca AGLE como fonte primaria.</p>
-          </div>
-          <span class="status" id="status-a">Carregando...</span>
+    <section class="section about" id="sobre">
+      <div class="container about-grid">
+        <div class="section-heading reveal">
+          <p class="section-index">01 / Sobre</p>
+          <h2>Pesquisa com foco em software utilizavel.</h2>
         </div>
+        <div class="about-content reveal">
+          <p>Atuo na intersecao entre desenvolvimento de software e investigacao independente, criando experimentos e aplicacoes em inteligencia artificial, processamento de imagens, recuperacao de conhecimento e simulacao.</p>
+          <p>Meu trabalho combina Python e C/C++ para algoritmos e modelos, FastAPI e PostgreSQL para servicos, Angular para interfaces e execucao local quando controle e privacidade importam.</p>
+          <div class="highlights">
+            <div class="highlight"><strong>Pesquisa aplicada</strong><span>Experimentos transformados em prototipos testaveis.</span></div>
+            <div class="highlight"><strong>Produto tecnico</strong><span>APIs, automacoes e sistemas orientados a resultado.</span></div>
+            <div class="highlight"><strong>Modelos locais</strong><span>RAG e IA com autonomia operacional.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <div class="stats">
-          <div class="stat">
-            <span class="label">Total</span>
-            <span class="value" data-total>0</span>
-          </div>
-          <div class="stat">
-            <span class="label">Ultimo valor</span>
-            <span class="value" data-last>-</span>
-          </div>
-          <div class="stat">
-            <span class="label">Entropia</span>
-            <span class="value" data-entropy>0.000</span>
-          </div>
-          <div class="stat">
-            <span class="label">Chi-quadrado</span>
-            <span class="value" data-chi>0.000</span>
-          </div>
+    <section class="section section-band" id="atuacao">
+      <div class="container">
+        <div class="section-heading compact reveal">
+          <p class="section-index">02 / Atuacao</p>
+          <h2>Areas de trabalho</h2>
         </div>
+        <div class="expertise-grid">
+          <article class="expertise-card reveal"><h3>Inteligencia Artificial</h3><p>Modelos preditivos, arquiteturas experimentais e integracao de inferencia em aplicacoes.</p></article>
+          <article class="expertise-card reveal"><h3>Visao Computacional</h3><p>Extracao de caracteristicas, analise de imagens e pipelines para dados medicos.</p></article>
+          <article class="expertise-card reveal"><h3>Sistemas Multiagentes</h3><p>Estrategias, coordenacao e geometria computacional aplicadas a simulacao RoboCup.</p></article>
+          <article class="expertise-card reveal"><h3>APIs e Automacao</h3><p>Backends em FastAPI, integracoes e fluxos reprodutiveis orientados a dados.</p></article>
+          <article class="expertise-card reveal"><h3>RAG Local</h3><p>Busca semantica e analise de documentos tecnicos com modelos executados localmente.</p></article>
+          <article class="expertise-card reveal"><h3>Computacao Experimental</h3><p>Entropia, criptografia experimental e hardware embarcado com Arduino e ESP32.</p></article>
+        </div>
+      </div>
+    </section>
 
-        <div class="histogram" aria-label="Histograma AGLE">
-          <div class="bar" data-i="0"><span>1</span></div>
-          <div class="bar" data-i="1"><span>2</span></div>
-          <div class="bar" data-i="2"><span>3</span></div>
-          <div class="bar" data-i="3"><span>4</span></div>
-          <div class="bar" data-i="4"><span>5</span></div>
-          <div class="bar" data-i="5"><span>6</span></div>
+    <section class="section" id="projetos">
+      <div class="container">
+        <div class="projects-top reveal">
+          <div class="section-heading compact">
+            <p class="section-index">03 / Projetos</p>
+            <h2>Projetos principais</h2>
+          </div>
+          <div class="filter-control" role="group" aria-label="Filtrar projetos">
+            <button class="filter-button active" type="button" data-filter="todos">Todos</button>
+            <button class="filter-button" type="button" data-filter="ia">IA</button>
+            <button class="filter-button" type="button" data-filter="pesquisa">Pesquisa</button>
+            <button class="filter-button" type="button" data-filter="software">Software</button>
+          </div>
         </div>
-      </article>
+        <div class="projects-grid">
+          <article class="project-card reveal" data-category="ia pesquisa software">
+            <div class="project-number">01</div><h3>RoboCup Soccer Simulation 2D</h3>
+            <p>Agentes autonomos com IA e geometria computacional para decisao, posicionamento e cooperacao em ambiente competitivo simulado.</p>
+            <div class="tags"><span>C++</span><span>IA</span><span>Geometria</span></div>
+          </article>
+          <article class="project-card reveal" data-category="ia software">
+            <div class="project-number">02</div><h3>Sistema RAG para documentos tecnicos</h3>
+            <p>Pipeline para indexacao, busca contextual e analise assistida de documentacao tecnica com modelos locais.</p>
+            <div class="tags"><span>Python</span><span>RAG</span><span>APIs</span></div>
+          </article>
+          <article class="project-card reveal" data-category="ia pesquisa">
+            <div class="project-number">03</div><h3>Processamento de imagens medicas</h3>
+            <p>Analise computacional de mamografias com caracteristicas locais, frequencia, gradientes e modelos de aprendizado.</p>
+            <div class="tags"><span>PyTorch</span><span>OpenCV</span><span>DICOM</span></div>
+          </article>
+          <article class="project-card reveal" data-category="ia pesquisa">
+            <div class="project-number">04</div><h3>Simulacao de mutacoes geneticas com IA</h3>
+            <p>Experimentos computacionais para explorar variacao, classificacao e interpretacao de dados biologicos.</p>
+            <div class="tags"><span>Python</span><span>ML</span><span>Dados</span></div>
+          </article>
+          <article class="project-card reveal" data-category="pesquisa software">
+            <div class="project-number">05</div><h3>Entropia com Arduino e ESP32</h3>
+            <p>Investigacao de fontes fisicas de entropia e aplicacoes em criptografia experimental embarcada.</p>
+            <div class="tags"><span>C/C++</span><span>ESP32</span><span>Entropia</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-      <article class="panel" data-rng="b">
-        <div class="panel-header">
-          <div>
-            <h2>Baseline (WebCrypto)</h2>
-            <p class="subtle">Comparacao com CSPRNG do navegador.</p>
-          </div>
-          <span class="status" id="status-b">Ativo</span>
+    <section class="section section-band" id="habilidades">
+      <div class="container skills-layout">
+        <div class="section-heading compact reveal">
+          <p class="section-index">04 / Habilidades</p>
+          <h2>Ferramentas tecnicas</h2>
+          <p class="section-note">Tecnologias aplicadas a pesquisa, prototipagem e sistemas de producao.</p>
         </div>
+        <div class="skills-grid">
+          <article class="skill-group reveal"><h3>Linguagens</h3><div class="skill-list"><span>Python</span><span>C</span><span>C++</span><span>JavaScript</span><span>SQL</span></div></article>
+          <article class="skill-group reveal"><h3>IA e dados</h3><div class="skill-list"><span>Machine Learning</span><span>Visao Computacional</span><span>PyTorch</span><span>RAG</span><span>Processamento de imagens</span></div></article>
+          <article class="skill-group reveal"><h3>Aplicacoes</h3><div class="skill-list"><span>FastAPI</span><span>Angular</span><span>PostgreSQL</span><span>REST APIs</span><span>Automacao</span></div></article>
+          <article class="skill-group reveal"><h3>Pesquisa aplicada</h3><div class="skill-list"><span>RoboCup 2D</span><span>Sistemas multiagentes</span><span>Modelos locais</span><span>ESP32</span><span>Analise experimental</span></div></article>
+        </div>
+      </div>
+    </section>
 
-        <div class="stats">
-          <div class="stat">
-            <span class="label">Total</span>
-            <span class="value" data-total>0</span>
-          </div>
-          <div class="stat">
-            <span class="label">Ultimo valor</span>
-            <span class="value" data-last>-</span>
-          </div>
-          <div class="stat">
-            <span class="label">Entropia</span>
-            <span class="value" data-entropy>0.000</span>
-          </div>
-          <div class="stat">
-            <span class="label">Chi-quadrado</span>
-            <span class="value" data-chi>0.000</span>
-          </div>
+    <section class="section" id="pesquisa">
+      <div class="container research-layout">
+        <div class="section-heading compact reveal">
+          <p class="section-index">05 / Pesquisa</p>
+          <h2>Linhas em desenvolvimento</h2>
         </div>
+        <div class="timeline">
+          <article class="timeline-item reveal"><span class="timeline-mark"></span><p class="timeline-label">Visao computacional</p><h3>Analise computacional de mamografias</h3><p>Pipelines baseados em patches, caracteristicas espectrais e aprendizado profundo para pesquisa experimental, sem uso diagnostico.</p></article>
+          <article class="timeline-item reveal"><span class="timeline-mark"></span><p class="timeline-label">Agentes autonomos</p><h3>RoboCup Soccer Simulation 2D</h3><p>Comportamento coordenado, tomada de decisao e estrategia para equipes de agentes simulados.</p></article>
+          <article class="timeline-item reveal"><span class="timeline-mark"></span><p class="timeline-label">Conhecimento local</p><h3>RAG para analise tecnica</h3><p>Uso de modelos locais para consultar fontes especializadas e automatizar fluxos de investigacao.</p></article>
+        </div>
+      </div>
+    </section>
 
-        <div class="histogram" aria-label="Histograma Baseline">
-          <div class="bar" data-i="0"><span>1</span></div>
-          <div class="bar" data-i="1"><span>2</span></div>
-          <div class="bar" data-i="2"><span>3</span></div>
-          <div class="bar" data-i="3"><span>4</span></div>
-          <div class="bar" data-i="4"><span>5</span></div>
-          <div class="bar" data-i="5"><span>6</span></div>
+    <section class="contact" id="contato">
+      <div class="container contact-inner reveal">
+        <p class="section-index">06 / Contato</p>
+        <h2>Projetos de tecnologia, pesquisa e software aplicado.</h2>
+        <p>Disponivel para contato profissional, colaboracoes em pesquisa e desenvolvimento de software aplicado.</p>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:angualberto@gmail.com"><span>E-mail</span><strong>angualberto@gmail.com</strong></a>
+          <a class="contact-link" href="tel:+5524993351215"><span>Telefone</span><strong>+55 24 99335-1215</strong></a>
+          <a class="contact-link" href="https://www.linkedin.com/in/andr%C3%A9-gualberto-749571389/" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Andre Gualberto</strong></a>
+          <a class="contact-link" href="https://github.com/angualberto" target="_blank" rel="noreferrer"><span>GitHub</span><strong>angualberto</strong></a>
         </div>
-      </article>
+      </div>
     </section>
   </main>
 
-  <script src="lib/agle_wasm.js"></script>
-  <script src="lib/my_rng.js"></script>
-  <script src="app.js"></script>
+  <footer class="site-footer">
+    <div class="container footer-inner"><span>&copy; <span id="year"></span> Andre Gualberto</span><div class="footer-links"><a href="mailto:angualberto@gmail.com">E-mail</a><a href="https://www.linkedin.com/in/andr%C3%A9-gualberto-749571389/" target="_blank" rel="noreferrer">LinkedIn</a><a href="https://github.com/angualberto" target="_blank" rel="noreferrer">GitHub</a></div></div>
+  </footer>
 </body>
 </html>
